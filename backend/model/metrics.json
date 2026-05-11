@@ -1,0 +1,101 @@
+{
+  "accuracy": 0.9485,
+  "precision": 0.9484,
+  "recall": 0.9485,
+  "f1_score": 0.9482,
+  "classes": [
+    "normal",
+    "dos",
+    "probe",
+    "r2l",
+    "u2r"
+  ],
+  "confusion_matrix": [
+    [
+      4565,
+      37,
+      29,
+      21,
+      9
+    ],
+    [
+      63,
+      2835,
+      30,
+      16,
+      15
+    ],
+    [
+      53,
+      37,
+      1707,
+      23,
+      15
+    ],
+    [
+      54,
+      36,
+      20,
+      1375,
+      11
+    ],
+    [
+      60,
+      45,
+      17,
+      27,
+      900
+    ]
+  ],
+  "per_class": {
+    "normal": {
+      "precision": 0.952,
+      "recall": 0.9794,
+      "f1-score": 0.9655
+    },
+    "dos": {
+      "precision": 0.9482,
+      "recall": 0.9581,
+      "f1-score": 0.9531
+    },
+    "probe": {
+      "precision": 0.9468,
+      "recall": 0.9302,
+      "f1-score": 0.9384
+    },
+    "r2l": {
+      "precision": 0.9405,
+      "recall": 0.9191,
+      "f1-score": 0.9297
+    },
+    "u2r": {
+      "precision": 0.9474,
+      "recall": 0.858,
+      "f1-score": 0.9005
+    }
+  },
+  "val_accuracy_curve": [
+    0.9451,
+    0.9501,
+    0.9524,
+    0.9532,
+    0.9532,
+    0.9532,
+    0.9536,
+    0.9531,
+    0.9535,
+    0.9533,
+    0.9529,
+    0.9533,
+    0.9536,
+    0.9531,
+    0.9525,
+    0.9533
+  ],
+  "train_samples": 48000,
+  "test_samples": 12000,
+  "training_time_s": 14.4,
+  "n_features": 41,
+  "architecture": "41\u2192128\u219264\u219232\u21925 (ReLU, Adam, High L2-reg)",
+  "framework": "scikit-learn MLPClassifier"
+}

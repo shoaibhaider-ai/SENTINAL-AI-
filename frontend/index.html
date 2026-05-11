@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>SENTINEL AI — Cybersecurity Threat Detection</title>
+  <meta name="description" content="AI-Powered Network Intrusion Detection System using Deep Learning (LSTM) to classify and monitor network threats in real time."/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<script>
+  window.onerror = function(msg, url, line, col, error) {
+    document.getElementById('status-text').textContent = "ERR: " + msg;
+    document.getElementById('status-text').style.color = "red";
+    document.getElementById('status-dot').style.background = "red";
+  };
+  window.addEventListener("unhandledrejection", function(e) {
+    document.getElementById('status-text').textContent = "PROMISE ERR: " + e.reason;
+    document.getElementById('status-text').style.color = "red";
+    document.getElementById('status-dot').style.background = "red";
+  });
+</script>
+<!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛡️</div>
+    <div>
+      <div class="logo-text">SENTINEL AI</div>
+      <div class="logo-sub">NIDS · DEEP LEARNING</div>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">CONNECTING …</span>
+  </div>
+
+  <div class="header-right">
+    <span id="live-clock"></span>
+    <div class="model-badge" id="model-badge">MODEL LOADING …</div>
+  </div>
+</header>
+
+<!-- ── MAIN ────────────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- STAT CARDS -->
+  <div class="stats-row">
+    <div class="stat-card green">
+      <span class="stat-icon">🔍</span>
+      <div class="stat-label">Total Events</div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-sub">since session start</div>
+    </div>
+    <div class="stat-card red">
+      <span class="stat-icon">⚠️</span>
+      <div class="stat-label">Threats / Min</div>
+      <div class="stat-value" id="stat-tpm">0.0</div>
+      <div class="stat-sub">live rate</div>
+    </div>
+    <div class="stat-card cyan">
+      <span class="stat-icon">🤖</span>
+      <div class="stat-label">Model Accuracy</div>
+      <div class="stat-value" id="stat-acc">—</div>
+      <div class="stat-sub">on test set</div>
+    </div>
+    <div class="stat-card orange">
+      <span class="stat-icon">🔴</span>
+      <div class="stat-label">Active Attacks</div>
+      <div class="stat-value" id="stat-attacks">0</div>
+      <div class="stat-sub">non-normal events</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Live Feed + Traffic Chart + Donut -->
+  <div class="grid-3" style="grid-template-columns:1.1fr 1.5fr 1fr">
+
+    <!-- Live Threat Feed -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot" style="background:var(--accent-r);animation:blink 1.5s infinite"></div>LIVE THREAT FEED</div>
+        <span style="font-size:11px;color:var(--text-muted)" id="feed-count">0 events</span>
+      </div>
+      <div id="threat-feed"></div>
+    </div>
+
+    <!-- Traffic Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot"></div>NETWORK TRAFFIC</div>
+        <span style="font-size:11px;color:var(--text-muted)">last 5 min · 10s buckets</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap"><canvas id="traffic-chart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Attack Distribution Donut -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot" style="background:var(--accent-p)"></div>ATTACK TYPES</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:220px"><canvas id="donut-chart"></canvas></div>
+        <div id="donut-legend" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: ML Insights + Confusion Matrix + Per-class -->
+  <div class="grid-3" style="margin-bottom:20px">
+
+    <!-- Model Metrics -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot" style="background:var(--accent-g)"></div>ML MODEL INSIGHTS</div>
+        <span style="font-size:10px;color:var(--text-muted)">LSTM · NSL-KDD</span>
+      </div>
+      <div class="card-body">
+        <div id="metric-bars"></div>
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px">ARCHITECTURE</div>
+          <div style="font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;line-height:1.7" id="arch-text">—</div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px">VAL ACCURACY CURVE</div>
+          <div class="chart-wrap" style="height:80px"><canvas id="acc-curve"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confusion Matrix -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot" style="background:var(--accent-o)"></div>CONFUSION MATRIX</div>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;align-items:center">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">Predicted →</div>
+        <div id="cm-grid"></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:8px">← Actual</div>
+      </div>
+    </div>
+
+    <!-- Per-class breakdown -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="dot" style="background:var(--accent-c)"></div>PER-CLASS METRICS</div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="per-class-table">
+          <thead>
+            <tr><th>Class</th><th>Prec</th><th>Recall</th><th>F1</th></tr>
+          </thead>
+          <tbody id="per-class-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Full Event Log -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:var(--accent-c)"></div>SECURITY EVENT LOG</div>
+      <span style="font-size:11px;color:var(--text-muted)" id="log-count">0 records</span>
+    </div>
+    <div class="filter-row" id="filter-row">
+      <span style="font-size:11px;color:var(--text-muted);margin-right:4px">FILTER:</span>
+      <button class="filter-btn active" data-filter="all" id="btn-all">ALL</button>
+      <button class="filter-btn" data-filter="dos"    id="btn-dos">DoS</button>
+      <button class="filter-btn" data-filter="probe"  id="btn-probe">Probe</button>
+      <button class="filter-btn" data-filter="r2l"    id="btn-r2l">R2L</button>
+      <button class="filter-btn" data-filter="u2r"    id="btn-u2r">U2R</button>
+      <button class="filter-btn" data-filter="normal" id="btn-normal">Normal</button>
+    </div>
+    <div class="log-table-wrap">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Source IP</th>
+            <th>Dest IP</th>
+            <th>Protocol</th>
+            <th>Service</th>
+            <th>Attack Type</th>
+            <th>Confidence</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody id="log-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script src="js/chart.umd.min.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/dashboard.js?v=2"></script>
+<script src="js/threatlog.js?v=2"></script>
+</body>
+</html>
