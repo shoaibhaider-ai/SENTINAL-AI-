@@ -1,4 +1,4 @@
-# 🛡️ SENTINEL AI — Professional Cybersecurity Threat Detection System
+# SENTINEL AI — Professional Cybersecurity Threat Detection System
 
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg)](https://fastapi.tiangolo.com)
@@ -9,17 +9,13 @@
 
 ---
 
-## 📸 Screenshots & Previews
+## Screenshots & Previews
 
-> *Placeholders for actual project screenshots. Replace the image URLs with actual paths once uploaded.*
-
-| Dashboard View | Real-time Threat Log |
-|:---:|:---:|
-| ![Dashboard](https://via.placeholder.com/400x250.png?text=Sentinel+Dashboard) | ![Threats](https://via.placeholder.com/400x250.png?text=Live+Threat+Log) |
+![Dashboard](dashboard.png)
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 * **Real-time Traffic Monitoring:** Instantaneous detection of network anomalies via WebSocket + REST API.
 * **AI-Powered Engine:** High-performance `MLPClassifier` trained on 41-feature NSL-KDD dataset to detect zero-day and known threats.
@@ -34,17 +30,20 @@
 
 ---
 
-## 📊 AI Model Performance & Confusion Matrix Metrics
+## AI Model Performance & Confusion Matrix Metrics
 
 The detection engine has been calibrated for realistic, robust performance rather than overfitted accuracy.
 
 ### General Metrics
+
+![Model Insights](model_insights.png)
+
 * **Overall Accuracy:** `94.85%`
 * **Macro Precision:** `94.84%`
 * **Macro Recall:** `94.85%`
 * **Macro F1-Score:** `94.82%`
 * **Training Time:** `~14.4 seconds` (on 48,000 samples)
-* **Architecture:** `41 → 128 → 64 → 32 → 5` Multi-layer Neural Network (Scikit-Learn)
+* **Architecture:** `41 -> 128 -> 64 -> 32 -> 5` Multi-layer Neural Network (Scikit-Learn)
 
 ### Class-Specific Metrics (Precision, Recall, F1)
 | Traffic Class | Precision | Recall | F1-Score |
@@ -57,6 +56,8 @@ The detection engine has been calibrated for realistic, robust performance rathe
 
 ### Confusion Matrix
 
+![Confusion Matrix](confusion_matrix.png)
+
 | True \ Predicted | Normal | DoS | Probe | R2L | U2R |
 |---|:---:|:---:|:---:|:---:|:---:|
 | **Normal** | **4565** | 37 | 29 | 21 | 9 |
@@ -67,12 +68,12 @@ The detection engine has been calibrated for realistic, robust performance rathe
 
 ---
 
-## ⚡ Setup & Shortcuts
+## Setup & Shortcuts
 
 ### The One-Click Shortcut
 To launch the entire platform, simply double-click the included batch script:
 
-> **▶️ `start.bat`**
+> **start.bat**
 
 This shortcut automatically:
 1. Installs all required Python dependencies.
@@ -98,7 +99,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -111,27 +112,27 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 📂 Project Architecture
+## Project Architecture
 
 ```text
 IS_Project/
-├── start.bat                  ← One-click execution shortcut
+├── start.bat                  <- One-click execution shortcut
 ├── backend/
-│   ├── main.py                ← Core FastAPI application
+│   ├── main.py                <- Core FastAPI application
 │   ├── requirements.txt
 │   ├── model/
-│   │   ├── train_model.py     ← Model training script
-│   │   ├── nids_model.keras   ← Saved model artifact
-│   │   ├── scaler.pkl         ← Feature scaler
-│   │   ├── label_encoder.pkl  ← Category encoder
-│   │   └── metrics.json       ← Saved model performance metrics
-│   ├── services/              ← Business logic (prediction, simulation)
-│   └── routes/                ← REST API & WebSocket routers
+│   │   ├── train_model.py     <- Model training script
+│   │   ├── nids_model.keras   <- Saved model artifact
+│   │   ├── scaler.pkl         <- Feature scaler
+│   │   ├── label_encoder.pkl  <- Category encoder
+│   │   └── metrics.json       <- Saved model performance metrics
+│   ├── services/              <- Business logic (prediction, simulation)
+│   └── routes/                <- REST API & WebSocket routers
 └── frontend/
-    ├── index.html             ← Main Dashboard interface
+    ├── index.html             <- Main Dashboard interface
     ├── css/style.css
-    └── js/                    ← Application logic and visualizations
+    └── js/                    <- Application logic and visualizations
 ```
 
 ---
-*Developed with ❤️ for Advanced Information Security.*
+*Developed for Advanced Information Security.*
